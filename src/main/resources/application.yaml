@@ -1,3 +1,21 @@
 spring:
-  application:
-    name: gerenciadorbiblioteca
+  data:
+    mongodb:
+      host: mongodb
+      port: 27017
+      database: biblioteca
+server:
+  port: 8080
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
+      mongodb:
+        driver:
+          protocol:
+            command: DEBUG

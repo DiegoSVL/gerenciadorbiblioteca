@@ -1,7 +1,9 @@
 package com.example.gerenciadorbiblioteca.controller;
 
+import com.example.gerenciadorbiblioteca.dto.ListarLivroResponseDTO;
 import com.example.gerenciadorbiblioteca.dto.LivroRequestDTO;
 import com.example.gerenciadorbiblioteca.dto.LivroResponseDTO;
+import com.example.gerenciadorbiblioteca.dto.MetaDTO;
 import com.example.gerenciadorbiblioteca.model.GeneroEnum;
 import com.example.gerenciadorbiblioteca.service.LivroService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/livros")
@@ -46,12 +50,20 @@ public class LivroController {
     @GetMapping
     @Operation(summary = "Listar livros", description = "Retorna uma lista de livros, podendo filtrar por gênero")
     @ApiResponse(responseCode = "200", description = "Lista de livros retornada com sucesso")
-    public ResponseEntity<Page<LivroResponseDTO>> listar(
+    public ResponseEntity<ListarLivroResponseDTO> listar(
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamanho,
             @RequestParam(required = false) GeneroEnum genero) {
         Pageable pageable = PageRequest.of(pagina, tamanho);
-        return ResponseEntity.ok(service.listar(genero, pageable));
+        Page<LivroResponseDTO> responseDTOPage = service.listar(genero, pageable);
+        List<LivroResponseDTO> items = responseDTOPage.getContent();
+        MetaDTO meta = new MetaDTO(
+                responseDTOPage.getPageable().getPageNumber(),
+                responseDTOPage.getPageable().getPageSize(),
+                responseDTOPage.getNumberOfElements(),
+                responseDTOPage.getTotalPages());
+
+        return ResponseEntity.ok(new ListarLivroResponseDTO(items, meta));
     }
 
     @PutMapping("/{id}")
