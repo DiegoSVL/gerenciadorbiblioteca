@@ -4,6 +4,10 @@ spring:
       host: mongodb
       port: 27017
       database: biblioteca
+  redis:
+    host: redis
+    port: 6379
+
 server:
   port: 8080
 

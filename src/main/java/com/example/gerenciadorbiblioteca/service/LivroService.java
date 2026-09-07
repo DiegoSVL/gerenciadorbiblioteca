@@ -10,6 +10,8 @@ import com.example.gerenciadorbiblioteca.repository.LivroRepository;
 import lombok.AllArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,8 @@ public class LivroService {
         return modelMapper.map(salvo, LivroResponseDTO.class);
     }
 
+
+    @Cacheable(value = "livros", key = "'biblioteca:livro:' + #id")
     public LivroResponseDTO buscarPorId(String id) {
         Livro livro = encontrarLivroPorId(id);
         return modelMapper.map(livro, LivroResponseDTO.class);
@@ -49,6 +53,8 @@ public class LivroService {
         return livros.map(livro -> modelMapper.map(livro, LivroResponseDTO.class));
     }
 
+
+    @CacheEvict(value = "livros", key = "'biblioteca:livro:' + #id")
     public LivroResponseDTO atualizar(String id, LivroRequestDTO dto) {
         Livro livroExistente = encontrarLivroPorId(id);
 
@@ -65,6 +71,8 @@ public class LivroService {
         return modelMapper.map(repository.save(livroExistente), LivroResponseDTO.class);
     }
 
+
+    @CacheEvict(value = "livros", key = "'biblioteca:livro:' + #id")
     public void excluir(String id) {
         if (!repository.existsById(id)) {
             throw new NegocioException("LIVRO_NAO_ENCONTRADO", "Livro com id '" + id + "' não encontrado.");
