@@ -9,6 +9,7 @@ import com.example.gerenciadorbiblioteca.service.LivroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/livros")
 @RequiredArgsConstructor
+@Tag(name = "livros", description = "Gerenciar livros")
 public class LivroController {
 
     private final LivroService service;
